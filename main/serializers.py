@@ -1,6 +1,5 @@
 from rest_framework import serializers
-
-import hotel
+from django.db.models import Avg
 
 from .models import *
 
@@ -140,6 +139,57 @@ class HotelSerializer(serializers.ModelSerializer):
         representation['apartments'] = ApartmentSerializer(instance.apartments.all(), many=True).data
         representation['comments'] = CommentSerializer(instance.comments.all(),
                                                        many=True).data
+        representation['likes'] = instance.likes.all().count()
+        representation['rating'] = instance.rating.aggregate(Avg('rating'))
         return representation
 
+
+class LikesSerializer(serializers.ModelSerializer):
+
+    author = serializers.ReadOnlyField(source='author.email')
+
+    class Meta:
+        model = Likes
+        fields = '__all__'
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        author = request.user
+        hotel = validated_data.get('hotel')
+        like = Likes.objects.get_or_create(author=author, hotel=hotel)[0]
+        like.likes = True if like.likes is False else False
+        like.save()
+        return like
+
+class RatingSerializer(serializers.ModelSerializer):
+
+    author = serializers.ReadOnlyField(source='author.email')
+
+    class Meta:
+        model = Rating
+        fields = '__all__'
+
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        author = request.user
+        hotel = validated_data.get('hotel')
+        print(validated_data)
+        rating = Rating.objects.get_or_create(author=author, hotel=hotel)[0]
+        rating.rating = validated_data['rating']
+        rating.save()
+        return rating
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Favorite
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['user'] = instance.user.email
+        representation['hotel'] = instance.hotel.name
+        return representation
 

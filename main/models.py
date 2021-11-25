@@ -1,6 +1,5 @@
 from django.db import models
-from account.models import *
-import hotel
+from account.models import MyUser
 
 COUNTRIES = (
         ('Азербайджанская Республика', 'Азербайджанская Республика'), 
@@ -47,3 +46,28 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.author}:{self.body}'
+
+
+
+class Likes(models.Model):
+    likes = models.BooleanField(default=False)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='likes')
+    author = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='likes')
+
+
+    def __str__(self):
+        return str(self.likes)
+
+
+class Rating(models.Model):
+    rating = models.IntegerField(default=0)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='rating')
+    author = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='rating')
+
+    def __str__(self):
+        return str(self.rating)
+
+class Favorite(models.Model):
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='favourites')
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='favourites')
+    favorite = models.BooleanField(default=True)

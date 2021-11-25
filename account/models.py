@@ -1,7 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.base import Model
 
 
 class MyUserManager(BaseUserManager):
@@ -56,6 +55,3 @@ class MyUser(AbstractUser):
         self.activation_code = activation_code
 
 
-class Favorites(models.Model):
-    owner = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='favorites')
-    

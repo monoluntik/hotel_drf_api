@@ -23,7 +23,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from main.views import ApartmentViewSet, HotelViewSet, CommentViewSet
+from main.views import *
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -43,6 +43,8 @@ router = DefaultRouter()
 router.register('apartments', ApartmentViewSet)
 router.register('hotels', HotelViewSet)
 router.register('comment', CommentViewSet)
+router.register('likes', LikesViewSet)
+router.register('rating', RatingViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
