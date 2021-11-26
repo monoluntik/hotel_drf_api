@@ -11,7 +11,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from account.serializers import *
 from account.models import MyUser
-from .utils import send_reset_code
+from .tasks import send_reset_code
 
 class ChangePasswordView(generics.UpdateAPIView):
     """
@@ -80,7 +80,7 @@ class ForgotPassword(APIView):
         user.is_active = False
         user.create_activation_code()
         user.save()
-        send_reset_code(user.email, user.activation_code)
+        send_reset_code.delay(email=user.email, activation_code=user.activation_code)
         return Response('Вам отправлено сообщение', status=200)
 
 class ForgotPasswordComplete(APIView):

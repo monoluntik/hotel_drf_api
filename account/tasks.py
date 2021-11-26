@@ -1,5 +1,9 @@
 from django.core.mail import send_mail
+from celery import shared_task
+from hotel._celery import app
 
+
+@app.task
 def send_activation_code(email, activation_code):
     activation_url = f'http://localhost:8000/account/activate/{activation_code}'
     message = f"""
@@ -15,11 +19,10 @@ def send_activation_code(email, activation_code):
         fail_silently=False
     )
 
+@app.task
 def send_reset_code(email, activation_code):
     # activation_url = f'http://localhost:8000/account/activate/{activation_code}'
     message = f"""
-        Thank you for signing up.
-        Please, activate your account.
         Activation code: {activation_code}
     """
     send_mail(

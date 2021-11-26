@@ -3,7 +3,7 @@ from rest_framework import serializers
 from account.models import MyUser
 from django.contrib.auth.hashers import make_password
 
-from account.utils import send_activation_code
+from account.tasks import send_activation_code
 #TODO : login serializer#TODO : login serializer
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -33,7 +33,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         email = validated_data.get('email')
         password = validated_data.get('password')
         user = MyUser.objects.create_user(email=email, password=password)
-        send_activation_code(email=user.email, activation_code=user.activation_code)
+        send_activation_code.delay(email=user.email, activation_code=str(user.activation_code))
+        # send_activation_code(email=user.email, activation_code=user.activation_code)
         return user
 
 
