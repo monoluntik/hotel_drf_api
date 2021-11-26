@@ -1,7 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.utils.crypto import get_random_string
 
 class MyUserManager(BaseUserManager):
     use_in_migrations = True
@@ -47,12 +47,7 @@ class MyUser(AbstractUser):
         3. UUID
         4. datetime.now() or time.time + timestamp() 01.01.1970
         """
-        import hashlib
-        string = self.email + str(self.id)
-        encode_string = string.encode()
-        md5_object = hashlib.md5(encode_string)
-        activation_code = md5_object.hexdigest()
-        self.activation_code = activation_code
- 
+        code = get_random_string(6, allowed_chars='123456789')
+        self.activation_code = code
 
 

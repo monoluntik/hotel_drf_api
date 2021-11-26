@@ -14,3 +14,18 @@ def send_activation_code(email, activation_code):
         [email, ],
         fail_silently=False
     )
+
+def send_reset_code(email, activation_code):
+    # activation_url = f'http://localhost:8000/account/activate/{activation_code}'
+    message = f"""
+        Thank you for signing up.
+        Please, activate your account.
+        Activation code: {activation_code}
+    """
+    send_mail(
+        'Activate your account',
+        message,
+        'test@test.com',
+        [email, ],
+        fail_silently=False
+    )

@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from account.models import MyUser
+from django.contrib.auth.hashers import make_password
 
 from account.utils import send_activation_code
 #TODO : login serializer#TODO : login serializer
@@ -9,8 +10,6 @@ class ChangePasswordSerializer(serializers.Serializer):
     model = MyUser
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
-
-
 
 
 
@@ -62,3 +61,59 @@ class LoginSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
+
+
+class CreateNewPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=500, required=True)
+    activation_code = serializers.CharField(max_length=6, min_length=6, required=True)
+    password = serializers.CharField(min_length=8, required=True)
+    password_confirm = serializers.CharField(min_length=8, required=True)
+
+    class Meta:
+        model = MyUser
+        fields = ('email', 'password', 'password_confirm', 'activation_code')
+
+    def validate_email(self, email):
+        if not MyUser.objects.filter(email=email).exists():
+            raise serializers.ValidationError('Пользователь не найден')
+        return email
+
+    def validate_activation_code(self, code):
+        if not MyUser.objects.filter(activation_code=code, is_active=False).exists():
+            raise serializers.ValidationError('Неверный код активации')
+        return code
+
+    def validate(self, attrs):
+        password = attrs.get('password')
+        password_confirm = attrs.get('password_confirm')
+        if password != password_confirm:
+            raise serializers.ValidationError('Пароли не совпадают')
+        return attrs
+
+
+    def save(self, **kwargs):
+        print(self.validated_data)
+        data = self.validated_data
+        email = data.get('email')
+        print(email)
+        code = data.get('activation_code')
+        password = data.get('password')
+        try:
+            user = MyUser.objects.filter(email=email,
+                                      activation_code=code,
+                                      is_active=False)[0]
+            print(user)
+        except MyUser.DoesNotExist:
+            raise serializers.ValidationError('Пользователь не найден')
+        user.is_active = True
+        print(user.is_active)
+        user.activation_code = ''
+        print(user.activation_code)
+        user.set_password(password)
+        # user.password = make_password(password)
+        # user._password = password
+        user.save()
+        # for i in user:
+        #     i.is_active = True
+        #     i.activation_code = ''
+        #     i.save()
