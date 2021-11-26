@@ -5,6 +5,15 @@ from account.models import MyUser
 from account.utils import send_activation_code
 #TODO : login serializer#TODO : login serializer
 
+class ChangePasswordSerializer(serializers.Serializer):
+    model = MyUser
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+
+
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=6, write_only=True)
     password_confirm = serializers.CharField(min_length=6, write_only=True)

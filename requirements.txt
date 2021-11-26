@@ -6,3 +6,4 @@ python-decouple
 djangorestframework-simplejwt
 drf-yasg
 pillow
+django-rest-passwordreset
