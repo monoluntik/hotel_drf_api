@@ -40,13 +40,6 @@ class MyUser(AbstractUser):
         return self.email
 
     def create_activation_code(self):
-        """
-        1. hashlib.md5(self.email+ str(self.id)encode() -> hexdigest()
-        test@test.com155 -> qpweori20357-075s
-        2. get_random_string(symbol_lenght(), allowed_char=('which symbols are allowed in this string'))
-        3. UUID
-        4. datetime.now() or time.time + timestamp() 01.01.1970
-        """
         code = get_random_string(6, allowed_chars='123456789')
         self.activation_code = code
 

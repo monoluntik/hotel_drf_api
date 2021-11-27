@@ -1,8 +1,8 @@
 from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework import status
 
 
@@ -14,9 +14,9 @@ class PermissionMixin:
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 
-        'delete', 'destroy']:
-            permissions= [IsAuthorPermission,]
-        elif self.action == 'create':
+        'delete', 'destroy', 'create']:
+            permissions= [IsAdminUser, ]
+        elif self.action == 'favorite':
             permissions = [IsAuthenticated]
         else: 
             permissions = []
@@ -26,7 +26,7 @@ class PermissionMixin:
 
 
 
-class ApartmentViewSet(ModelViewSet):
+class ApartmentViewSet(PermissionMixin, ModelViewSet):
     queryset = Apartment.objects.all()
     serializer_class = ApartmentSerializer
 
@@ -73,12 +73,15 @@ class HotelViewSet(PermissionMixin,ModelViewSet):
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated, ]
 
-class LikesViewSet(PermissionMixin, ModelViewSet):
+class LikesViewSet(ModelViewSet):
     queryset = Likes.objects.all()
     serializer_class = LikesSerializer
+    permission_classes = [IsAuthenticated, ]
 
-class RatingViewSet(PermissionMixin, ModelViewSet):
+class RatingViewSet(ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+    permission_classes = [IsAuthenticated, ]
 

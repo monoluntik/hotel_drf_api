@@ -177,6 +177,7 @@ class RatingSerializer(serializers.ModelSerializer):
         print(validated_data)
         rating = Rating.objects.get_or_create(author=author, hotel=hotel)[0]
         rating.rating = validated_data['rating']
+        print(rating)
         rating.save()
         return rating
 
