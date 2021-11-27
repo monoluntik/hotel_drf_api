@@ -48,6 +48,17 @@ class HotelViewSet(PermissionMixin,ModelViewSet):
 
 
 
+    @action(methods=['GET'], detail=False)
+    def recommendation(self, request):
+        q = request.query_params.get('q')
+        queryset = self.get_queryset().filter(
+            country__icontains=q
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)          
+
+
+
 
     @action(detail=False, methods=['get'])
     def favorites(self, request):

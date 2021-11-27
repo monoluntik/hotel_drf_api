@@ -51,6 +51,7 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('', schema_view.with_ui()),
     path('account/', include('account.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,

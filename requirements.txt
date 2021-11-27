@@ -8,3 +8,4 @@ drf-yasg
 pillow
 django-rest-passwordreset
 celery
+django-widget-tweaks
