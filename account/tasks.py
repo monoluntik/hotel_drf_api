@@ -26,9 +26,20 @@ def send_reset_code(email, activation_code):
         Activation code: {activation_code}
     """
     send_mail(
-        'Activate your account',
+        'Reset your password',
         message,
         'test@test.com',
         [email, ],
         fail_silently=False
+    )
+
+
+@app.task
+def send_order_info(email, message):
+    send_mail(
+        'Order info',
+        message,
+        'test@test.com',
+        [email, ],
+        fail_silently=False        
     )

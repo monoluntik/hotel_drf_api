@@ -22,6 +22,10 @@ class Hotel(models.Model):
     country = models.CharField(choices=COUNTRIES, max_length=255)
     address = models.CharField(max_length=1000)
 
+
+    def __str__(self) -> str:
+        return f'{self.name} {self.country} {self.address}'
+
 class HotelImage(models.Model):
     image = models.ImageField(upload_to='images')
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='images')
@@ -33,6 +37,8 @@ class Apartment(models.Model):
     description = models.TextField()
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='apartments')
 
+    def __str__(self) -> str:
+        return f'{self.hotel} {self.id}'
 
 class ApartmentImage(models.Model):
     image = models.ImageField(upload_to='images')
