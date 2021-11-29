@@ -9,3 +9,4 @@ pillow
 django-rest-passwordreset
 celery
 django-widget-tweaks
+redis
