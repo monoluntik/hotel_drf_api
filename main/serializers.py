@@ -140,7 +140,7 @@ class HotelSerializer(serializers.ModelSerializer):
         representation['comments'] = CommentSerializer(instance.comments.all(),
                                                        many=True).data
         representation['likes'] = instance.likes.all().count()
-        representation['rating'] = instance.rating.aggregate(Avg('rating'))
+        representation['rating'] = instance.rating.aggregate(Avg('rating')).get("rating_avg")
         return representation
 
 

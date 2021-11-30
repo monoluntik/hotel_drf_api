@@ -67,7 +67,7 @@ class HotelViewSet(PermissionMixin,ModelViewSet):
         serializer = FavoriteSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
         hotel = self.get_object()
         obj, created = Favorite.objects.get_or_create(user=request.user, hotel=hotel, )

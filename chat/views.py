@@ -23,12 +23,13 @@ def user_list(request, pk=None):
 
 
 @api_view(["POST", "GET"])
-def message_list(request, sender=None, receiver=None):
+def message_list(request):
     """
     List all required messages, or create a new message.
     """
     if request.method == 'GET':
-        messages = Message.objects.filter(Q(sender_id=sender, receiver_id=receiver,)|Q(sender_id=receiver, receiver_id=sender,))
+        sender = request.user
+        messages = Message.objects.filter(Q(sender_id=sender,)|Q (receiver_id=sender,))
         serializer = MessageSerializer(messages, many=True, context={'request': request})
         for message in messages:
             message.is_read = True
@@ -37,7 +38,7 @@ def message_list(request, sender=None, receiver=None):
 
     elif request.method == 'POST':
         data = request.data
-        serializer = MessageSerializer(data=data)
+        serializer = MessageSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
