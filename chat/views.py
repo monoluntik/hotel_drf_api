@@ -1,12 +1,13 @@
-# from django.contrib.auth.models import User                                # Django Build in User Model
-from rest_framework.decorators import api_view
 from django.db.models import Q
-from account.models import MyUser
+
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from chat.models import Message                                                   # Our Message model
-from chat.serializers import MessageSerializer, UserSerializer # Our Serializer Classes
-# Users View
-@api_view(["GET",])                                                              # Decorator to make the view csrf excempt
+
+from account.models import MyUser
+from chat.models import Message                                    
+from chat.serializers import MessageSerializer, UserSerializer 
+
+@api_view(["GET",])                                                              
 def user_list(request, pk=None):
     """
     List all required messages, or create a new message.
@@ -18,8 +19,6 @@ def user_list(request, pk=None):
             users = MyUser.objects.all()
         serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data, )
-
-
 
 
 @api_view(["POST", "GET"])

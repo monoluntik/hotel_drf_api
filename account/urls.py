@@ -1,9 +1,11 @@
-from django.urls import path, include
-from .views import ActivateView, RegisterView, ChangePasswordView, ForgotPassword, ForgotPasswordComplete
+from django.urls import path
+
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
+from .views import ActivateView, RegisterView, ChangePasswordView, ForgotPassword, ForgotPasswordComplete
 
 urlpatterns = [
     path('register/', RegisterView.as_view()),

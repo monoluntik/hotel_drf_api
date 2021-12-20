@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """For Serializing User"""
     password = serializers.CharField(write_only=True)
     class Meta:
         model = MyUser
@@ -13,7 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    """For Serializing Message"""
     sender = serializers.ReadOnlyField(source='sender.email')
     receiver = serializers.SlugRelatedField(many=False, slug_field='email', queryset=MyUser.objects.all())
 
@@ -21,8 +19,6 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = '__all__'
-
-
 
     def create(self, validated_data):
         print(self.context['request'])

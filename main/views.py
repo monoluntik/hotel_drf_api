@@ -1,6 +1,7 @@
 from django.db.models import Q
+
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework import status
@@ -8,7 +9,6 @@ from rest_framework import status
 
 from .models import *
 from .serializers import *
-from .permissions import IsAuthorPermission
 
 class PermissionMixin:
 
@@ -22,8 +22,6 @@ class PermissionMixin:
             permissions = []
 
         return [permission() for permission in permissions]
-
-
 
 
 class ApartmentViewSet(PermissionMixin, ModelViewSet):
@@ -46,8 +44,6 @@ class HotelViewSet(PermissionMixin,ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)    
 
-
-
     @action(methods=['GET'], detail=False)
     def recommendation(self, request):
         q = request.query_params.get('q')
@@ -56,9 +52,6 @@ class HotelViewSet(PermissionMixin,ModelViewSet):
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)          
-
-
-
 
     @action(detail=False, methods=['get'])
     def favorites(self, request):
@@ -81,15 +74,18 @@ class HotelViewSet(PermissionMixin,ModelViewSet):
     def get_serializer_context(self):
         return {'request': self.request, 'action': self.action}
 
+
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, ]
 
+
 class LikesViewSet(ModelViewSet):
     queryset = Likes.objects.all()
     serializer_class = LikesSerializer
     permission_classes = [IsAuthenticated, ]
+
 
 class RatingViewSet(ModelViewSet):
     queryset = Rating.objects.all()

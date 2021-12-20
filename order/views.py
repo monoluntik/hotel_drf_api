@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from rest_framework import serializers
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
@@ -7,8 +5,6 @@ from rest_framework.response import Response
 
 from order.models import Order
 from order.serializers import OrderSerializer
-
-# Create your views here.
  
 
 class OrderViewSet(ModelViewSet):

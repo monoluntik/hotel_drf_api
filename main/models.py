@@ -1,4 +1,5 @@
 from django.db import models
+
 from account.models import MyUser
 
 COUNTRIES = (
@@ -22,14 +23,13 @@ class Hotel(models.Model):
     country = models.CharField(choices=COUNTRIES, max_length=255)
     address = models.CharField(max_length=1000)
 
-
     def __str__(self) -> str:
         return f'{self.name} {self.country} {self.address}'
+
 
 class HotelImage(models.Model):
     image = models.ImageField(upload_to='images')
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='images')
-
 
 
 class Apartment(models.Model):
@@ -54,7 +54,6 @@ class Comment(models.Model):
         return f'{self.author}:{self.body}'
 
 
-
 class Likes(models.Model):
     likes = models.BooleanField(default=False)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='likes')
@@ -72,6 +71,7 @@ class Rating(models.Model):
 
     def __str__(self):
         return str(self.rating)
+
 
 class Favorite(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='favourites')

@@ -1,7 +1,8 @@
 from django.db import models
+
 from account.models import MyUser
 from main.models import Apartment, Hotel
-# Create your models here.
+
 
 class Order(models.Model):
     owner = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='order')

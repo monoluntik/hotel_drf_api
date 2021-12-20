@@ -1,16 +1,14 @@
 from django.contrib.auth import authenticate
-from rest_framework import serializers
-from account.models import MyUser
-from django.contrib.auth.hashers import make_password
 
+from rest_framework import serializers
+
+from account.models import MyUser
 from account.tasks import send_activation_code
-#TODO : login serializer#TODO : login serializer
 
 class ChangePasswordSerializer(serializers.Serializer):
     model = MyUser
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
-
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -34,7 +32,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.get('password')
         user = MyUser.objects.create_user(email=email, password=password)
         send_activation_code.delay(email=user.email, activation_code=str(user.activation_code))
-        # send_activation_code(email=user.email, activation_code=user.activation_code)
         return user
 
 
@@ -61,7 +58,6 @@ class LoginSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
-
 
 
 class CreateNewPasswordSerializer(serializers.Serializer):
@@ -91,7 +87,6 @@ class CreateNewPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError('Пароли не совпадают')
         return attrs
 
-
     def save(self, **kwargs):
         print(self.validated_data)
         data = self.validated_data
@@ -111,10 +106,4 @@ class CreateNewPasswordSerializer(serializers.Serializer):
         user.activation_code = ''
         print(user.activation_code)
         user.set_password(password)
-        # user.password = make_password(password)
-        # user._password = password
         user.save()
-        # for i in user:
-        #     i.is_active = True
-        #     i.activation_code = ''
-        #     i.save()
